@@ -1,4 +1,4 @@
-package com.maxtrain.bootcamp.prs.user;
+package com.maxtrain.bootcamp.prs.vendor;
 
 import java.util.Optional;
 
@@ -14,73 +14,62 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.maxtrain.bootcamp.prs.vendor.Vendor;
 import com.maxtrain.bootcamp.prs.util.JsonResponse;
 
 @CrossOrigin
 @Controller
-@RequestMapping(path="/users")
-public class UserController {
+@RequestMapping(path="/vendors")
+public class VendorController {
 
 	@Autowired
-	private UserRepository userRepository;
+	private VendorRepository vendorRepository; 
 	
-	@GetMapping(path="/authenticate")
-	public @ResponseBody JsonResponse authenticate(@RequestBody User user) {
-		try {
-			User u = userRepository.findByUsernameAndPassword(user.getUsername(), user.getPassword());
-			if(u == null) {
-				return JsonResponse.getErrorInstance("User not found");
-			}
-			return JsonResponse.getInstance(u);
-		} catch (Exception ex) {
-			return JsonResponse.getErrorInstance("Exception:"+ex.getMessage(), ex);
-		}
-	}
-	@GetMapping(path="")
+	@GetMapping(name="")
 	public @ResponseBody JsonResponse getAll() {
 		try {
-			return JsonResponse.getInstance(userRepository.findAll());
+			return JsonResponse.getInstance(vendorRepository.findAll());
 		} catch (Exception ex) {
 			return JsonResponse.getErrorInstance("Exception:"+ex.getMessage(), ex);
-		}
+		}	
 	}
 	@GetMapping(path="/{id}")
 	public @ResponseBody JsonResponse get(@PathVariable Integer id) {
 		try {
-			Optional<User> user = userRepository.findById(id);
-			if(!user.isPresent()) {
-				return JsonResponse.getErrorInstance("User not found");
+			Optional<Vendor> vendor = vendorRepository.findById(id);
+			if(!vendor.isPresent()) {
+				return JsonResponse.getErrorInstance("Vendor not found");
 			}
-			return JsonResponse.getInstance(user.get());
+			return JsonResponse.getInstance(vendor.get());
 		} catch (Exception ex) {
 			return JsonResponse.getErrorInstance("Exception:"+ex.getMessage(), ex);
 		}
 	}
-	private JsonResponse save(User user) {
+	private JsonResponse save(Vendor vendor) {
 		try {
-			User usr = userRepository.save(user);
-			return JsonResponse.getInstance(usr);
+			Vendor vnd = vendorRepository.save(vendor);
+			return JsonResponse.getInstance(vnd);
 		} catch (Exception ex) {
 			return JsonResponse.getErrorInstance(ex, ex.getMessage());
 		}
 	}
 	@PostMapping(path="")
-	public @ResponseBody JsonResponse Insert(@RequestBody User user) {
-		return save(user);
+	public @ResponseBody JsonResponse Insert(@RequestBody Vendor vendor) {
+		return save(vendor);
 	}
 	@PutMapping(path="/{id}")
-	public @ResponseBody JsonResponse Update(@RequestBody User user, @PathVariable int id) {
-		return save(user);
+	public @ResponseBody JsonResponse Update(@RequestBody Vendor vendor, @PathVariable int id) {
+		return save(vendor);
 	}
 	@DeleteMapping(path="/{id}")
 	public @ResponseBody JsonResponse Delete(@PathVariable int id) {
 		try {
-			Optional<User> usr = userRepository.findById(id);
-			if(!usr.isPresent()) {
-				return JsonResponse.getErrorInstance("User not found");
+			Optional<Vendor> vnd = vendorRepository.findById(id);
+			if(!vnd.isPresent()) {
+				return JsonResponse.getErrorInstance("Vendor not found");
 			}
-			userRepository.deleteById(usr.get().getId());
-			return JsonResponse.getInstance(usr);
+			vendorRepository.deleteById(vnd.get().getId());
+			return JsonResponse.getInstance(vnd);
 		} catch (Exception ex) {
 			return JsonResponse.getErrorInstance("Exception:"+ex.getMessage(), ex);
 		}
