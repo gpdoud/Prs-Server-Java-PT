@@ -80,4 +80,5 @@ public class Vendor {
 	public void setIsPreferredVendor(boolean isPreferredVendor) {
 		this.isPreferredVendor = isPreferredVendor;
 	}
+	public Vendor() {}
 }
