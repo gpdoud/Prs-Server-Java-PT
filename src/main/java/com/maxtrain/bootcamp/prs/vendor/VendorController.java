@@ -25,7 +25,7 @@ public class VendorController {
 	@Autowired
 	private VendorRepository vendorRepository; 
 	
-	@GetMapping(name="")
+	@GetMapping(path="")
 	public @ResponseBody JsonResponse getAll() {
 		try {
 			return JsonResponse.getInstance(vendorRepository.findAll());

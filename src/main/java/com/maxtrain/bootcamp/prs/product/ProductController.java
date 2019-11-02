@@ -25,7 +25,7 @@ public class ProductController {
 	@Autowired
 	private ProductRepository productRepository;
 	
-	@GetMapping(name="")
+	@GetMapping(path="")
 	public @ResponseBody JsonResponse getAll() {
 		try {
 			return JsonResponse.getInstance(productRepository.findAll());

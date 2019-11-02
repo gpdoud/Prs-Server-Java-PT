@@ -25,7 +25,45 @@ public class RequestController {
 	@Autowired
 	private RequestRepository requestRepository;
 	
-	@GetMapping(name="")
+	@GetMapping(path="/reviews/{id}")
+	public @ResponseBody JsonResponse getAllReviews(@PathVariable int id) {	
+		try {
+			Iterable<Request> requests = requestRepository.findAllByUserIdNotAndStatus(id, Request.STATUS_REVIEW);
+			return JsonResponse.getInstance(requests);
+		} catch (Exception ex) {
+			return JsonResponse.getErrorInstance("Error getting reviewed requests", ex);
+		}
+	}
+	
+	private @ResponseBody JsonResponse setRequestStatus(Request request, String status) {
+		try {
+			Optional<Request> req = requestRepository.findById(request.getId());
+			if(!req.isPresent()) {
+				return JsonResponse.getErrorInstance("Request not found");
+			}
+			request.setStatus(status);
+			requestRepository.save(request);
+			return JsonResponse.getInstance(request);
+		} catch (Exception ex) {
+			return JsonResponse.getErrorInstance("Exception getting request", ex);
+		}
+	}
+	@PutMapping(path="/review")
+	public @ResponseBody JsonResponse setStatusToReview(@RequestBody Request request) {	
+		request.setReasonForRejection(null);
+		return setRequestStatus(request, Request.STATUS_REVIEW);
+	}
+	@PutMapping(path="/approve")
+	public @ResponseBody JsonResponse setStatusToApproved(@RequestBody Request request) {	
+		request.setReasonForRejection(null);
+		return setRequestStatus(request, Request.STATUS_APPROVED);
+	}
+	@PutMapping(path="/reject")
+	public @ResponseBody JsonResponse setStatusToRejected(@RequestBody Request request) {		
+		return setRequestStatus(request, Request.STATUS_REJECTED);
+	}
+	
+	@GetMapping(path="")
 	public @ResponseBody JsonResponse getAll() {
 		try {
 			return JsonResponse.getInstance(requestRepository.findAll());
